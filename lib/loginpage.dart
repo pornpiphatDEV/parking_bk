@@ -191,6 +191,8 @@ class _LoginPageState extends State<LoginPage> {
                                                     Agreementpage()));
                                       } else if (response.statusCode == 200) {
                                         print("เข้าสู่ระบบได้");
+                                        var res = jsonDecode(response.body);
+                                        storage.write('uid', res[0]['id']);
                                         Navigator.pushReplacement(
                                             context,
                                             MaterialPageRoute(

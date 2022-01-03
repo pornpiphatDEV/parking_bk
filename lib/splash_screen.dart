@@ -6,6 +6,8 @@ import 'agreementpage.dart';
 import 'creditcard.dart';
 import 'root_app.dart';
 
+import 'package:get_storage/get_storage.dart';
+
 class Splash extends StatefulWidget {
   @override
   VideoState createState() => VideoState();
@@ -16,15 +18,24 @@ class VideoState extends State<Splash> with SingleTickerProviderStateMixin {
 
   late AnimationController animationController;
   late Animation<double> animation;
-
+  final storage = GetStorage();
   startTime() async {
     var _duration = new Duration(seconds: 2);
     return new Timer(_duration, navigationPage);
   }
 
   void navigationPage() {
-    Navigator.pushReplacement(
-        context, MaterialPageRoute(builder: (context) => LoginPage()));
+    // storage.read("uid").toString();
+
+    if (storage.read("uid") != null) {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => RootApp()));
+    } else {
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => LoginPage()));
+    }
+    // Navigator.pushReplacement(
+    //     context, MaterialPageRoute(builder: (context) => LoginPage()));
     // Navigator.pushReplacement(
     //     context, MaterialPageRoute(builder: (context) => Agreementpage()));
     // Navigator.pushReplacement(

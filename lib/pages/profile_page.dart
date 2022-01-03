@@ -2,6 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:provider/provider.dart';
+import '../providers/userprovider.dart';
+import '../loginpage.dart';
+import 'package:get_storage/get_storage.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -9,10 +13,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  TextEditingController _email =
-      TextEditingController(text: "abbie_wilson@gmail.com");
-  TextEditingController dateOfBirth = TextEditingController(text: "04-19-1992");
-  TextEditingController password = TextEditingController(text: "123456");
+  final storage = GetStorage();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,6 +24,12 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Widget getBody() {
     var size = MediaQuery.of(context).size;
+    var prefix = Provider.of<Userprovider>(context).prefix;
+    var fname = Provider.of<Userprovider>(context).fname;
+    var lname = Provider.of<Userprovider>(context).lname;
+    var email = Provider.of<Userprovider>(context).email;
+    var amountmoney = Provider.of<Userprovider>(context).amountmoney;
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -41,7 +48,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   top: 60, right: 20, left: 20, bottom: 25),
               child: Column(
                 children: [
-                  Row(
+                    Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
@@ -51,7 +58,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             fontWeight: FontWeight.bold,
                             color: Colors.grey),
                       ),
-                    
+
                       // Icon(Icons.logout)
                     ],
                   ),
@@ -101,7 +108,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              "Abbie Wilson",
+                              "$prefix $fname $lname",
                               style: TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.bold,
@@ -111,7 +118,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               height: 10,
                             ),
                             Text(
-                              "Credit score: 73.50",
+                              "email : $email",
                               style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w500,
@@ -158,7 +165,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 height: 10,
                               ),
                               Text(
-                                "\$2446.90",
+                                "$amountmoney บาท",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 20,
@@ -177,7 +184,7 @@ class _ProfilePageState extends State<ProfilePage> {
           SizedBox(
             height: 20,
           ),
-                Column(
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Center(
@@ -187,10 +194,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     margin: EdgeInsets.all(20),
                     child: FlatButton(
                         color: Color.fromARGB(255, 185, 189, 187),
-                        onPressed: () => {
-                          print("ตั้งค่า")
-
-                        },
+                        onPressed: () => {print("ตั้งค่า")},
                         child: Row(children: <Widget>[
                           Icon(Icons.settings),
                           Text("ตั้งค่า")
@@ -208,9 +212,13 @@ class _ProfilePageState extends State<ProfilePage> {
                     margin: EdgeInsets.all(20),
                     child: FlatButton(
                         color: Color.fromARGB(255, 185, 189, 187),
-                        onPressed: () => {
-                          print("ออกจากระบบ")
-
+                        onPressed: () {
+                          print("ออกจากระบบ");
+                          storage.remove('uid');
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginPage()));
                         },
                         child: Row(children: <Widget>[
                           Icon(Icons.logout),
@@ -224,23 +232,3 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
-
-            // Row(
-            //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //         children: [
-            //           Text(
-            //             "Profile",
-            //             style: TextStyle(
-            //                 fontSize: 20,
-            //                 fontWeight: FontWeight.bold,
-            //                 color: Colors.grey),
-            //           ),
-            //           FlatButton(
-            //               onPressed: () => {},
-            //               child: Row(children: <Widget>[
-            //                 Icon(Icons.logout),
-            //                 Text("ออกจากระบบ")
-            //               ]))
-            //           // Icon(Icons.logout)
-            //         ],
-            //       ),

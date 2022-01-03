@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
-import 'pages/profile_page.dart';
-
 import 'package:provider/provider.dart';
 import 'providers/userprovider.dart';
+import 'package:http/http.dart' as http;
+
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'package:get_storage/get_storage.dart';
+
+import 'pages/profile_page.dart';
+import 'pages/booking_page.dart';
 
 class RootApp extends StatefulWidget {
   @override
@@ -12,18 +19,43 @@ class RootApp extends StatefulWidget {
 }
 
 class _RootAppState extends State<RootApp> {
+  final storage = GetStorage();
   int pageIndex = 0;
   List<Widget> pages = [
     Text("data"),
     Text("data"),
     Text("data"),
     ProfilePage(),
-    Text("data"),
+    BookingPage(),
   ];
+
+  void getUser(BuildContext context) async {
+    final response = await http.get(
+      Uri.parse('http://192.168.0.103:3000/users/userId'),
+      headers: {'userid': storage.read("uid").toString()},
+    );
+    final resstatusCode = response.statusCode;
+    final responseJson = jsonDecode(response.body..toString());
+
+    print(resstatusCode);
+
+    if (resstatusCode == 200) {
+      print(responseJson);
+      final prefix = responseJson[0]["prefix"];
+      final firstname = responseJson[0]["firstname"];
+      final lastname = responseJson[0]["lastname"];
+      final email = responseJson[0]["email"];
+      final money = responseJson[0]["money"];
+
+      Provider.of<Userprovider>(context, listen: false)
+          .setuserprovider(email, prefix, firstname, lastname, money);
+    }
+  }
 
   @override
   void initState() {
     // TODO: implement initState
+    this.getUser(context);
     super.initState();
   }
 
@@ -31,8 +63,6 @@ class _RootAppState extends State<RootApp> {
   void dispose() {
     super.dispose();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -92,6 +122,7 @@ class _RootAppState extends State<RootApp> {
     // _incrementCounter(context);
     setState(() {
       pageIndex = index;
+      print(index);
     });
   }
 }

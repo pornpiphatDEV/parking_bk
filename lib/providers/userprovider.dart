@@ -1,26 +1,25 @@
 import 'package:flutter/material.dart';
 
 class Userprovider extends ChangeNotifier {
-
   String _email = "";
+  String _prefix = "";
   String _fname = "";
   String _lname = "";
-  int _amount_money = 0;
-
-
+  int _amountmoney = 0;
 
   String get email => _email;
+  String get prefix => _prefix;
   String get fname => _fname;
   String get lname => _lname;
-  int get amount_money => _amount_money;
+  int get amountmoney => _amountmoney;
 
-
-
-  void setuserprovider(String email, String fname , String  lname , int  amount_money ) {
+  void setuserprovider(String email, String prefix, String fname, String lname,
+      int amountmoney) {
     _email = email;
+    _prefix = prefix;
     _fname = fname;
     _lname = lname;
-    _amount_money = amount_money;
+    _amountmoney = amountmoney;
     notifyListeners();
   }
 }
