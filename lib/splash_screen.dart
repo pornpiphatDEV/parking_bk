@@ -7,6 +7,8 @@ import 'creditcard.dart';
 import 'root_app.dart';
 
 import 'package:get_storage/get_storage.dart';
+import './function/socker.dart';
+import 'package:provider/provider.dart';
 
 class Splash extends StatefulWidget {
   @override
@@ -19,6 +21,8 @@ class VideoState extends State<Splash> with SingleTickerProviderStateMixin {
   late AnimationController animationController;
   late Animation<double> animation;
   final storage = GetStorage();
+
+  // Bookingrightsproviderprovider model = Bookingrightsproviderprovider();
   startTime() async {
     var _duration = new Duration(seconds: 2);
     return new Timer(_duration, navigationPage);
@@ -34,12 +38,6 @@ class VideoState extends State<Splash> with SingleTickerProviderStateMixin {
       Navigator.pushReplacement(
           context, MaterialPageRoute(builder: (context) => LoginPage()));
     }
-    // Navigator.pushReplacement(
-    //     context, MaterialPageRoute(builder: (context) => LoginPage()));
-    // Navigator.pushReplacement(
-    //     context, MaterialPageRoute(builder: (context) => Agreementpage()));
-    // Navigator.pushReplacement(
-    //     context, MaterialPageRoute(builder: (context) => RootApp()));
   }
 
   @override
@@ -58,6 +56,16 @@ class VideoState extends State<Splash> with SingleTickerProviderStateMixin {
       _visible = !_visible;
     });
     startTime();
+
+    print('initState');
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print('didChangeDependencies');
+
+
   }
 
   @override

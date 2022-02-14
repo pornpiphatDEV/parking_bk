@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -5,8 +7,19 @@ import 'package:provider/provider.dart';
 import '../providers/userprovider.dart';
 import '../loginpage.dart';
 import 'package:get_storage/get_storage.dart';
-
+import 'dart:async';
 import 'package:http/http.dart' as http;
+
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
+
+import 'package:socket_io_client/socket_io_client.dart' as IO;
+
+import '../function/socker.dart';
+import '../constants/addressAPI.dart';
+import '../Popup/customddalog.dart';
+// import './listmenupage/enterparking.dart';
+import './listmenupage/generate.dart';
 
 class BookingPage extends StatefulWidget {
   const BookingPage({Key? key}) : super(key: key);
@@ -16,10 +29,42 @@ class BookingPage extends StatefulWidget {
 }
 
 class _BookingPageState extends State<BookingPage> {
-  int activeCategory = 0;
-  TextEditingController _budgetName =
-      TextEditingController(text: "2021-8-1 15:20:00");
-  TextEditingController _budgetPrice = TextEditingController(text: "20 บาท");
+  String limitbooking = '';
+  bool isDisabled = true;
+  late String currenttime = 'วันที่ - เดือน - ปี - 00:00:00';
+  late Timer timer;
+  
+
+  // Future<http.Response> getapi() async {
+  //   return http.get(Uri.parse('http://192.168.0.100:3001/'));
+
+  //   final response = await http.get(
+  //     Uri.parse('http://192.168.0.100:3001/'),
+  //   );
+  //   final resstatusCode = response.statusCode;
+  //   final responseJson = jsonDecode(response.body..toString());
+
+  //   return responseJson;
+  //   // print('Response status: ${response.statusCode}');
+  //   // print('Response body: ${response.body}');
+  // }
+  void getlimitbooking() async {
+    final response = await http.get(
+      Uri.parse('${addressAPI.news_urlAPI2}'),
+    );
+    final resstatusCode = response.statusCode;
+    final responseJson = jsonDecode(response.body..toString());
+
+    setState(() {
+      limitbooking = '${responseJson[0]['limitbooking']}';
+      if (responseJson[0]['limitbooking'] == 0) {
+        isDisabled = false;
+      } else {
+        isDisabled = true;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,14 +73,62 @@ class _BookingPageState extends State<BookingPage> {
     );
   }
 
+  final dateStr = DateFormat('วันที่ d เดือน MMM ปี y - kk:mm:ss', 'th')
+      .format(DateTime.now());
+
+  @override
+  void initState() {
+    super.initState();
+
+    print("initstate");
+    // contentToServer();
+    getlimitbooking();
+    setState(() {
+      currenttime = dateStr.toString();
+    });
+
+    socket.on('bookingrights2', (data) {
+      print('bookingrights2');
+      print(data);
+      setState(() {
+        limitbooking = '$data';
+        if (data == 0) {
+          isDisabled = false;
+        } else {
+          isDisabled = true;
+        }
+      });
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    print('didUpdateWidget');
+
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   Widget getBody() {
+    // timer = Timer.periodic(new Duration(seconds: 1), (timer) async {
+    //   // print(bookinglimit);
+    //   setState(() {
+    //     currenttime = DateFormat('วันที่ d เดือน MMM ปี y - kk:mm:ss', 'th')
+    //         .format(DateTime.now());
+    //   });
+    // });
+
     var size = MediaQuery.of(context).size;
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-         
             child: Padding(
               padding: const EdgeInsets.only(
                   top: 50, right: 20, left: 20, bottom: 25),
@@ -81,10 +174,10 @@ class _BookingPageState extends State<BookingPage> {
               width: 350,
               height: 150,
               decoration: BoxDecoration(
-                  color: Colors.white,
-                  border: Border.all(width: 5, color: Colors.greenAccent),
-                  borderRadius: BorderRadius.circular(20),
-                ),
+                color: Colors.white,
+                border: Border.all(width: 5, color: Colors.greenAccent),
+                borderRadius: BorderRadius.circular(20),
+              ),
               child: Padding(
                 padding: const EdgeInsets.only(
                     left: 25, right: 25, top: 20, bottom: 20),
@@ -100,13 +193,13 @@ class _BookingPageState extends State<BookingPage> {
                               top: 1,
                             ),
                             child: Center(
-                                child: Image.asset(
-                                  'assets/images/auto.png',
-                                  width: 30,
-                                  height: 30,
-                                  fit: BoxFit.contain,
-                                ),
-                                )),
+                              child: Image.asset(
+                                'assets/images/auto.png',
+                                width: 30,
+                                height: 30,
+                                fit: BoxFit.contain,
+                              ),
+                            )),
                         Padding(
                           padding: EdgeInsets.only(top: 1, right: 40),
                           child: Text(
@@ -125,7 +218,7 @@ class _BookingPageState extends State<BookingPage> {
                       padding: EdgeInsets.only(),
                       child: Center(
                         child: Text(
-                          "5",
+                          "${limitbooking}",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -162,18 +255,16 @@ class _BookingPageState extends State<BookingPage> {
                       color: Colors.red),
                 ),
                 SizedBox(
-                  height: 5,
+                  height: 10,
                 ),
-                TextField(
-                  controller: _budgetName,
-                  cursorColor: Colors.black,
-                  style: TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black),
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                  ),
+                Container(
+                  margin: const EdgeInsets.all(15.0),
+                  padding: const EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                          color: Color.fromARGB(255, 122, 230, 144))),
+                  child:
+                      Text('${currenttime} ', style: TextStyle(fontSize: 20)),
                 ),
               ],
             ),
@@ -203,10 +294,78 @@ class _BookingPageState extends State<BookingPage> {
             padding: const EdgeInsets.only(),
             child: Center(
               child: RaisedButton(
-                onPressed: () {
-                  print('ยืนยันการจอง');
-                  // showAlert(context);
-                },
+                onPressed: isDisabled
+                    ? () async {
+                        var email = context.read<Userprovider>().email;
+
+                        var url =
+                            Uri.parse('${addressAPI.news_urlAPI2}/booking');
+                        try {
+                          var response = await http.post(url, body: {
+                            "email": email,
+                          });
+                          print('Response status: ${response.statusCode}');
+                          print('Response body: ${response.body}');
+
+                          if (response.statusCode == 401) {
+                            await showDialog(
+                              context: context,
+                              builder: (BuildContext context) => CustomDialog(
+                                title: "ไม่สาารถจองได้",
+                                description: "ท่านได้ทำการจองสิทธ์ไว้แล้ว",
+                                buttonText: "clear",
+                              ),
+                            );
+                          } else if (response.statusCode == 200) {
+                            var url2 = Uri.parse(
+                                '${addressAPI.news_urlAPI1}/bookingtime/bookingqrcode');
+                            var response2 = await http.post(url2, body: {
+                              "email": email,
+                            });
+                            print('Response status: ${response2.statusCode}');
+                            print('response2 body: ${response2.body}');
+
+                            var res = jsonDecode(response2.body..toString());
+                            print(res);
+
+                            await showDialog(
+                              context: context,
+                              builder: (BuildContext context) => CustomDialog(
+                                title: "สำเร็จ",
+                                description: "ท่านได้ทำการจองสิทธืสำเร็จแล้ว",
+                                buttonText: "OK",
+                              ),
+                            );
+
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        GeneratePage(valuesFrom: res)));
+                            // if(response2.statusCode == 200){
+
+                            // }
+                            // var res = jsonDecode(response.body);
+
+                            // await showDialog(
+                            //   context: context,
+                            //   builder: (BuildContext context) => CustomDialog(
+                            //     title: "สำเร็จ",
+                            //     description: "ท่านได้ทำการจองสิทธืสำเร็จแล้ว",
+                            //     buttonText: "OK",
+                            //   ),
+                            // );
+
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => GeneratePage()));
+                          }
+                        } catch (e) {
+                          print(e);
+                        }
+                      }
+                    : null,
                 child:
                     const Text('ยืนยันการจอง', style: TextStyle(fontSize: 20)),
                 color: Colors.green,

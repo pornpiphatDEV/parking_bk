@@ -1,6 +1,9 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
+import 'package:parking_bk/constants/addressAPI.dart';
 import 'package:provider/provider.dart';
 import 'providers/userprovider.dart';
 import 'package:http/http.dart' as http;
@@ -12,6 +15,7 @@ import 'package:get_storage/get_storage.dart';
 
 import 'pages/profile_page.dart';
 import 'pages/booking_page.dart';
+import 'pages/memu_page.dart';
 
 class RootApp extends StatefulWidget {
   @override
@@ -21,17 +25,19 @@ class RootApp extends StatefulWidget {
 class _RootAppState extends State<RootApp> {
   final storage = GetStorage();
   int pageIndex = 0;
+  bool loop = true;
+
   List<Widget> pages = [
     Text("data"),
     Text("data"),
-    Text("data"),
+    Memupage(),
     ProfilePage(),
     BookingPage(),
   ];
 
   void getUser(BuildContext context) async {
     final response = await http.get(
-      Uri.parse('http://192.168.0.103:3000/users/userId'),
+      Uri.parse('${addressAPI.news_urlAPI1}/users/userId'),
       headers: {'userid': storage.read("uid").toString()},
     );
     final resstatusCode = response.statusCode;
@@ -120,9 +126,9 @@ class _RootAppState extends State<RootApp> {
 
   selectedTab(index) {
     // _incrementCounter(context);
+
     setState(() {
       pageIndex = index;
-      print(index);
     });
   }
 }

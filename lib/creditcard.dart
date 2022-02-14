@@ -8,6 +8,7 @@ import 'package:get_storage/get_storage.dart';
 import 'model/car.dart';
 import 'Popup/customddalog.dart';
 import 'root_app.dart';
+import 'constants/addressAPI.dart';
 class Creditcard extends StatefulWidget {
   final valueFromcarregisterpage;
 
@@ -149,7 +150,7 @@ class _CreditcardState extends State<Creditcard> {
                             print(confirmation_information);
 
                             var url = Uri.parse(
-                                'http://192.168.0.103:3000/users/confirmat');
+                                '${addressAPI.news_urlAPI1}/users/confirmat');
                             try {
                               var response = await http.post(url,
                                   body: confirmation_information);

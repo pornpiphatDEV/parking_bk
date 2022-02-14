@@ -10,6 +10,8 @@ import 'Popup/customddalog.dart';
 import 'agreementpage.dart';
 import 'package:get_storage/get_storage.dart';
 import 'root_app.dart';
+import './constants/addressAPI.dart';
+
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -22,6 +24,12 @@ class _LoginPageState extends State<LoginPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final storage = GetStorage();
+
+  @override
+  void initState() {
+    print(addressAPI.news_urlAPI1);
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -160,7 +168,7 @@ class _LoginPageState extends State<LoginPage> {
                                     };
 
                                     var url = Uri.parse(
-                                        'http://192.168.0.103:3000/users/login');
+                                        '${addressAPI.news_urlAPI1}/users/login');
                                     try {
                                       var response =
                                           await http.post(url, body: users);

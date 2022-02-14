@@ -8,7 +8,7 @@ import 'model/users.dart';
 import 'Popup/customddalog.dart';
 import 'agreementpage.dart';
 import 'package:get_storage/get_storage.dart';
-
+import './constants/addressAPI.dart';
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
 
@@ -339,7 +339,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       };
                                       print(users);
                                       var url = Uri.parse(
-                                          'http://192.168.0.103:3000/users/register');
+                                          '${addressAPI.news_urlAPI1}/users/register');
                                       try {
                                         var response =
                                             await http.post(url, body: users);
