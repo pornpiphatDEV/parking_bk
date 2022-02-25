@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'loginpage.dart';
 import 'carregisterpage.dart';
@@ -9,6 +10,14 @@ import 'root_app.dart';
 import 'package:get_storage/get_storage.dart';
 import './function/socker.dart';
 import 'package:provider/provider.dart';
+import 'dart:io';
+
+import 'package:internet_connection_checker/internet_connection_checker.dart';
+import 'Popup/customddalog.dart';
+
+import 'package:http/http.dart' as http;
+
+import 'package:parking_bk/constants/addressAPI.dart';
 
 class Splash extends StatefulWidget {
   @override
@@ -28,15 +37,46 @@ class VideoState extends State<Splash> with SingleTickerProviderStateMixin {
     return new Timer(_duration, navigationPage);
   }
 
-  void navigationPage() {
+  void navigationPage() async {
     // storage.read("uid").toString();
 
-    if (storage.read("uid") != null) {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => RootApp()));
+    final bool isConnected = await InternetConnectionChecker().hasConnection;
+
+    if (isConnected) {
+      if (storage.read("uid") != null) {
+        // Navigator.pushReplacement(
+        //     context, MaterialPageRoute(builder: (context) => RootApp()));
+
+        final response = await http.get(
+          Uri.parse('${addressAPI.news_urlAPI1}/users/userId'),
+          headers: {'userid': storage.read("uid").toString()},
+        );
+        final resstatusCode = response.statusCode;
+        final responseJson = jsonDecode(response.body..toString());
+        final status_agreement = responseJson[0]["status_agreement"];
+        if (status_agreement != 0) {
+          Navigator.pushReplacement(
+              context, MaterialPageRoute(builder: (context) => RootApp()));
+        } else {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => Agreementpage()));
+        }
+
+        print(responseJson);
+      } else {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
+      }
     } else {
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LoginPage()));
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) => CustomDialog(
+          title: "ไม่มีการเชื่อมต่ออินเตอร์เน๊ต",
+          description: "กรุณาเชื่อมต่ออินเตอร์เน๊ต",
+          buttonText: "clear",
+        ),
+      );
+      exit(0);
     }
   }
 
@@ -64,8 +104,6 @@ class VideoState extends State<Splash> with SingleTickerProviderStateMixin {
   void didChangeDependencies() {
     super.didChangeDependencies();
     print('didChangeDependencies');
-
-
   }
 
   @override

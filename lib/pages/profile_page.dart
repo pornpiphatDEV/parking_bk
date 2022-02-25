@@ -1,4 +1,6 @@
 // import 'package:budget_tracker_ui/theme/colors.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -6,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../providers/userprovider.dart';
 import '../loginpage.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:restart_app/restart_app.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -48,7 +51,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   top: 60, right: 20, left: 20, bottom: 25),
               child: Column(
                 children: [
-                    Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
@@ -84,20 +87,20 @@ class _ProfilePageState extends State<ProfilePage> {
                                       Color.fromARGB(255, 23, 175, 89),
                                 ),
                               ),
-                              Positioned(
-                                top: 16,
-                                left: 13,
-                                child: Container(
-                                  width: 85,
-                                  height: 85,
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                          image: NetworkImage(
-                                              "https://images.unsplash.com/photo-1531256456869-ce942a665e80?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MTI4fHxwcm9maWxlfGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60"),
-                                          fit: BoxFit.cover)),
-                                ),
-                              )
+                              // Positioned(
+                              //   top: 16,
+                              //   left: 13,
+                              //   child: Container(
+                              //     width: 85,
+                              //     height: 85,
+                              //     decoration: BoxDecoration(
+                              //         shape: BoxShape.circle,
+                              //         image: DecorationImage(
+                              //             image: NetworkImage(
+                              //                 "https://images.unsplash.com/photo-1531256456869-ce942a665e80?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MTI4fHxwcm9maWxlfGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60"),
+                              //             fit: BoxFit.cover)),
+                              //   ),
+                              // )
                             ],
                           ),
                         ),
@@ -212,13 +215,14 @@ class _ProfilePageState extends State<ProfilePage> {
                     margin: EdgeInsets.all(20),
                     child: FlatButton(
                         color: Color.fromARGB(255, 185, 189, 187),
-                        onPressed: () {
+                        onPressed: () async {
                           print("ออกจากระบบ");
-                          storage.remove('uid');
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => LoginPage()));
+                          await storage.remove('uid');
+                          print(storage.read('uid'));
+
+                          if (storage.read('uid') == null) {
+                            Restart.restartApp();
+                          }
                         },
                         child: Row(children: <Widget>[
                           Icon(Icons.logout),

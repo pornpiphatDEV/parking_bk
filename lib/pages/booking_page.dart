@@ -32,7 +32,6 @@ class _BookingPageState extends State<BookingPage> {
   String limitbooking = '';
   bool isDisabled = true;
   late String currenttime = 'วันที่ - เดือน - ปี - 00:00:00';
-  late Timer timer;
   
 
   // Future<http.Response> getapi() async {
@@ -99,30 +98,30 @@ class _BookingPageState extends State<BookingPage> {
         }
       });
     });
+
+    
   }
 
   @override
   void didChangeDependencies() {
-    print('didUpdateWidget');
-
     super.didChangeDependencies();
+    print('didUpdateWidget');
   }
 
   @override
   void dispose() {
+    // mytimer.cancel();
     super.dispose();
+    print('dispose');
   }
 
   Widget getBody() {
-    // timer = Timer.periodic(new Duration(seconds: 1), (timer) async {
-    //   // print(bookinglimit);
-    //   setState(() {
-    //     currenttime = DateFormat('วันที่ d เดือน MMM ปี y - kk:mm:ss', 'th')
-    //         .format(DateTime.now());
-    //   });
-    // });
+
 
     var size = MediaQuery.of(context).size;
+    final storage = GetStorage();
+
+
 
     return SingleChildScrollView(
       child: Column(
@@ -296,37 +295,56 @@ class _BookingPageState extends State<BookingPage> {
               child: RaisedButton(
                 onPressed: isDisabled
                     ? () async {
-                        var email = context.read<Userprovider>().email;
+                        var userid = storage.read("uid").toString();
 
                         var url =
                             Uri.parse('${addressAPI.news_urlAPI2}/booking');
                         try {
                           var response = await http.post(url, body: {
-                            "email": email,
+                            "userid": userid,
                           });
                           print('Response status: ${response.statusCode}');
                           print('Response body: ${response.body}');
 
                           if (response.statusCode == 401) {
-                            await showDialog(
-                              context: context,
-                              builder: (BuildContext context) => CustomDialog(
-                                title: "ไม่สาารถจองได้",
-                                description: "ท่านได้ทำการจองสิทธ์ไว้แล้ว",
-                                buttonText: "clear",
-                              ),
-                            );
+                            var message = jsonDecode(response.body);
+                            print(message['message']);
+
+                            if (message['message'] ==
+                                'has already been reserved in the system.') {
+                              await showDialog(
+                                context: context,
+                                builder: (BuildContext context) => CustomDialog(
+                                  title: "ไม่สาารถจองได้",
+                                  description: "ท่านได้ทำการจองสิทธ์ไว้แล้ว",
+                                  buttonText: "clear",
+                                ),
+                              );
+                            } else if (message['message'] ==
+                                'have been parked in the parking.') {
+                              await showDialog(
+                                context: context,
+                                builder: (BuildContext context) => CustomDialog(
+                                  title: "ไม่สาารถจองได้",
+                                  description: "ท่านได้ทำการเข้าจอดแล้ว",
+                                  buttonText: "clear",
+                                ),
+                              );
+                            }
                           } else if (response.statusCode == 200) {
                             var url2 = Uri.parse(
                                 '${addressAPI.news_urlAPI1}/bookingtime/bookingqrcode');
                             var response2 = await http.post(url2, body: {
-                              "email": email,
+                              "userid": userid,
                             });
                             print('Response status: ${response2.statusCode}');
                             print('response2 body: ${response2.body}');
 
                             var res = jsonDecode(response2.body..toString());
                             print(res);
+
+                            Provider.of<Userprovider>(context, listen: false)
+                                .booking_setmoney();
 
                             await showDialog(
                               context: context,
@@ -342,24 +360,6 @@ class _BookingPageState extends State<BookingPage> {
                                 MaterialPageRoute(
                                     builder: (context) =>
                                         GeneratePage(valuesFrom: res)));
-                            // if(response2.statusCode == 200){
-
-                            // }
-                            // var res = jsonDecode(response.body);
-
-                            // await showDialog(
-                            //   context: context,
-                            //   builder: (BuildContext context) => CustomDialog(
-                            //     title: "สำเร็จ",
-                            //     description: "ท่านได้ทำการจองสิทธืสำเร็จแล้ว",
-                            //     buttonText: "OK",
-                            //   ),
-                            // );
-
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => GeneratePage()));
                           }
                         } catch (e) {
                           print(e);

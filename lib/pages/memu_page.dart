@@ -11,6 +11,8 @@ import '../constants/addressAPI.dart';
 import '../providers/userprovider.dart';
 import 'package:provider/provider.dart';
 import './listmenupage/generate.dart';
+import 'package:get_storage/get_storage.dart';
+import '../Popup/customddalog.dart';
 
 class Memupage extends StatefulWidget {
   const Memupage({Key? key}) : super(key: key);
@@ -20,6 +22,7 @@ class Memupage extends StatefulWidget {
 }
 
 class _MemupageState extends State<Memupage> {
+  final storage = GetStorage();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,25 +66,67 @@ class _MemupageState extends State<Memupage> {
                         clipBehavior: Clip.antiAlias,
                         child: InkWell(
                           onTap: () async {
-                            var email = context.read<Userprovider>().email;
+                            // var email = context.read<Userprovider>().email;
+                            var userid = storage.read("uid").toString();
 
-                            print("Card Clicked");
                             var url2 = Uri.parse(
                                 '${addressAPI.news_urlAPI1}/bookingtime/bookingqrcode');
                             var response2 = await http.post(url2, body: {
-                              "email": email,
+                              "userid": userid,
                             });
                             print('Response status: ${response2.statusCode}');
                             print('response2 body: ${response2.body}');
 
                             var res = jsonDecode(response2.body..toString());
-                           
+                            print(res);
 
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        GeneratePage(valuesFrom: res)));
+                            switch (response2.statusCode) {
+                              case 200:
+                                {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              GeneratePage(valuesFrom: res)));
+                                }
+                                break;
+                              case 403:
+                                {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        CustomDialog(
+                                      title: "หมดเวลาการจองแล้ว",
+                                      description:
+                                          "กรุณาจองสิทธ์การใช้งานใหม่อีกครั้ง",
+                                      buttonText: "OK",
+                                    ),
+                                  );
+                                }
+                                break;
+
+                              case 401:
+                                {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        CustomDialog(
+                                      title: "ไม่มีการจอง",
+                                      description: "กรุณาจองสิทธ์การใช้งานก่อน",
+                                      buttonText: "OK",
+                                    ),
+                                  );
+                                }
+                                break;
+
+                              default:
+                            }
+
+                            // Navigator.push(
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) =>
+                            //             GeneratePage(valuesFrom: res)));
 
                             // Navigator.push(
                             //     context,

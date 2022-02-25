@@ -28,6 +28,13 @@ class Userprovider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void booking_setmoney(){
+
+
+    _amountmoney = amountmoney - 20;
+    notifyListeners();
+  }
+
  
 
  
