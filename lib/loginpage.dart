@@ -87,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
                                           .secondary)),
                               prefixIcon: Icon(
                                 Icons.email,
-                                color: Colors.green,
+                                color: Colors.orange,
                               ),
                             ),
                             validator: MultiValidator([
@@ -120,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                                           .secondary)),
                               prefixIcon: Icon(
                                 Icons.lock,
-                                color: Colors.green,
+                                color: Colors.orange,
                               ),
                               suffixIcon: IconButton(
                                 onPressed: () {
@@ -128,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                                     hidePassword = !hidePassword;
                                   });
                                 },
-                                color: Colors.green,
+                                color: Colors.orange,
                                 icon: Icon(hidePassword
                                     ? Icons.visibility_off
                                     : Icons.visibility),
@@ -143,7 +143,7 @@ class _LoginPageState extends State<LoginPage> {
                           Align(
                             alignment: Alignment.topRight,
                             child: Text("Forgot Password?",
-                                style: TextStyle(color: Colors.green)),
+                                style: TextStyle(color: Colors.orange)),
                           ),
                           SizedBox(
                             height: 20,
@@ -218,7 +218,7 @@ class _LoginPageState extends State<LoginPage> {
                                   //             RegisterPage()));
                                 },
                                 // #1FB684
-                                color: Color(0xFF1FB684),
+                                color: Color.fromARGB(255, 247, 166, 80),
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(30)),
                                 child: Text(
@@ -269,17 +269,6 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           SizedBox(
                             height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "By signing up, you are agree with our",
-                                style: TextStyle(fontSize: 12),
-                              ),
-                              Text(" Terms & Conditions",
-                                  style: TextStyle(fontSize: 12)),
-                            ],
                           ),
                         ],
                       ),

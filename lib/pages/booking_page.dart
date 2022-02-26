@@ -34,19 +34,7 @@ class _BookingPageState extends State<BookingPage> {
   late String currenttime = 'วันที่ - เดือน - ปี - 00:00:00';
   
 
-  // Future<http.Response> getapi() async {
-  //   return http.get(Uri.parse('http://192.168.0.100:3001/'));
 
-  //   final response = await http.get(
-  //     Uri.parse('http://192.168.0.100:3001/'),
-  //   );
-  //   final resstatusCode = response.statusCode;
-  //   final responseJson = jsonDecode(response.body..toString());
-
-  //   return responseJson;
-  //   // print('Response status: ${response.statusCode}');
-  //   // print('Response body: ${response.body}');
-  // }
   void getlimitbooking() async {
     final response = await http.get(
       Uri.parse('${addressAPI.news_urlAPI2}'),
@@ -174,7 +162,7 @@ class _BookingPageState extends State<BookingPage> {
               height: 150,
               decoration: BoxDecoration(
                 color: Colors.white,
-                border: Border.all(width: 5, color: Colors.greenAccent),
+                border: Border.all(width: 5, color: Colors.orangeAccent),
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Padding(
@@ -261,7 +249,7 @@ class _BookingPageState extends State<BookingPage> {
                   padding: const EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
                       border: Border.all(
-                          color: Color.fromARGB(255, 122, 230, 144))),
+                          color: Color.fromARGB(255, 230, 178, 122))),
                   child:
                       Text('${currenttime} ', style: TextStyle(fontSize: 20)),
                 ),
@@ -330,7 +318,22 @@ class _BookingPageState extends State<BookingPage> {
                                   buttonText: "clear",
                                 ),
                               );
+                            }else if (message['message'] ==
+                                'lower limit than we set.') {
+                              await showDialog(
+                                context: context,
+                                builder: (BuildContext context) => CustomDialog(
+                                  title: "ไม่สาารถจองได้",
+                                  description: "วงเงินต่ำกาว่าที่เรากำหนด",
+                                  buttonText: "clear",
+                                ),
+                              );
                             }
+
+
+
+
+  
                           } else if (response.statusCode == 200) {
                             var url2 = Uri.parse(
                                 '${addressAPI.news_urlAPI1}/bookingtime/bookingqrcode');
@@ -368,7 +371,7 @@ class _BookingPageState extends State<BookingPage> {
                     : null,
                 child:
                     const Text('ยืนยันการจอง', style: TextStyle(fontSize: 20)),
-                color: Colors.green,
+                color: Colors.orange,
                 textColor: Colors.white,
                 elevation: 5,
               ),

@@ -83,24 +83,23 @@ class _ProfilePageState extends State<ProfilePage> {
                                   radius: 110.0,
                                   lineWidth: 6.0,
                                   percent: 0.53,
-                                  progressColor:
-                                      Color.fromARGB(255, 23, 175, 89),
+                                  progressColor: Colors.orange,
                                 ),
                               ),
-                              // Positioned(
-                              //   top: 16,
-                              //   left: 13,
-                              //   child: Container(
-                              //     width: 85,
-                              //     height: 85,
-                              //     decoration: BoxDecoration(
-                              //         shape: BoxShape.circle,
-                              //         image: DecorationImage(
-                              //             image: NetworkImage(
-                              //                 "https://images.unsplash.com/photo-1531256456869-ce942a665e80?ixid=MXwxMjA3fDB8MHxzZWFyY2h8MTI4fHxwcm9maWxlfGVufDB8fDB8&ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=60"),
-                              //             fit: BoxFit.cover)),
-                              //   ),
-                              // )
+                              Positioned(
+                                top: 16,
+                                left: 13,
+                                child: Container(
+                                  width: 85,
+                                  height: 85,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      image: DecorationImage(
+                                          image: AssetImage(
+                                              'assets/images/users.png'),
+                                          fit: BoxFit.cover)),
+                                ),
+                              )
                             ],
                           ),
                         ),
@@ -138,11 +137,11 @@ class _ProfilePageState extends State<ProfilePage> {
                   Container(
                     width: double.infinity,
                     decoration: BoxDecoration(
-                        color: Color.fromARGB(255, 23, 175, 89),
+                        color: Colors.orange,
                         borderRadius: BorderRadius.circular(12),
                         boxShadow: [
                           BoxShadow(
-                            color: Color.fromARGB(255, 23, 175, 89),
+                            color: Colors.orange,
                             spreadRadius: 10,
                             blurRadius: 3,
                             // changes position of shadow
@@ -187,49 +186,50 @@ class _ProfilePageState extends State<ProfilePage> {
           SizedBox(
             height: 20,
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                    width: MediaQuery.of(context).size.width * 0.96,
-                    height: MediaQuery.of(context).size.width * 0.15,
-                    margin: EdgeInsets.all(20),
-                    child: FlatButton(
-                        color: Color.fromARGB(255, 185, 189, 187),
-                        onPressed: () => {print("ตั้งค่า")},
-                        child: Row(children: <Widget>[
-                          Icon(Icons.settings),
-                          Text("ตั้งค่า")
-                        ]))),
-              ),
-            ],
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                    width: MediaQuery.of(context).size.width * 0.96,
-                    height: MediaQuery.of(context).size.width * 0.15,
-                    margin: EdgeInsets.all(20),
-                    child: FlatButton(
-                        color: Color.fromARGB(255, 185, 189, 187),
-                        onPressed: () async {
-                          print("ออกจากระบบ");
-                          await storage.remove('uid');
-                          print(storage.read('uid'));
+          // Column(
+          //   crossAxisAlignment: CrossAxisAlignment.start,
+          //   children: [
+          //     Center(
+          //       child: Container(
+          //           width: MediaQuery.of(context).size.width * 0.96,
+          //           height: MediaQuery.of(context).size.width * 0.15,
+          //           margin: EdgeInsets.all(20),
+          //           child: FlatButton(
+          //               color: Color.fromARGB(255, 185, 189, 187),
+          //               onPressed: () => {print("ตั้งค่า")},
+          //               child: Row(children: <Widget>[
+          //                 Icon(Icons.settings),
+          //                 Text("ตั้งค่า")
+          //               ]))),
+          //     ),
+          //   ],
+          // ),
 
-                          if (storage.read('uid') == null) {
-                            Restart.restartApp();
-                          }
-                        },
-                        child: Row(children: <Widget>[
-                          Icon(Icons.logout),
-                          Text("ออกจากระบบ")
-                        ]))),
-              ),
-            ],
+          Card(
+            child: ListTile(
+              leading: Icon(Icons.settings),
+              title: Text('ตั้งค่า'),
+              onTap: () async {
+                // print("Card Clicked");
+              },
+            ),
+          ),
+
+          Card(
+            child: ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('ออกจากระบบ'),
+              onTap: () async {
+                // print("Card Clicked");
+                print("ออกจากระบบ");
+                await storage.remove('uid');
+                print(storage.read('uid'));
+
+                if (storage.read('uid') == null) {
+                  Restart.restartApp();
+                }
+              },
+            ),
           ),
         ],
       ),

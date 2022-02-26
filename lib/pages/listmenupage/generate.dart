@@ -106,9 +106,9 @@ class GeneratePageState extends State<GeneratePage> {
     );
     return Scaffold(
       appBar: AppBar(
-          title: Text('QR Code Generator'),
+          title: Text('สะแกนเข้าจอด'),
           actions: <Widget>[],
-          backgroundColor: Colors.green),
+          backgroundColor: Colors.orange),
       body: Container(
         padding: EdgeInsets.all(20.0),
         child: Column(
@@ -198,7 +198,30 @@ showAlert(BuildContext context, String qrcodeid) {
                 });
                 print('Response status: ${response.statusCode}');
                 print('Response body: ${response.body}');
-                Navigator.pop(context);
+                // Navigator.pop(context);
+
+                // await showDialog(
+                //   context: context,
+                //   builder: (BuildContext context) => CustomDialog(
+                //     title: "ไม่สามารถยกเลิกได้",
+                //     description: "ท่านได้ทำการเข้าจอดแล้ว",
+                //     buttonText: "OK",
+                //   ),
+                // );
+
+                if (response.statusCode != 200) {
+                  await showDialog(
+                    context: context,
+                    builder: (BuildContext context) => CustomDialog(
+                      title: "ไม่สามารถยกเลิกได้",
+                      description: "ท่านได้ทำการเข้าจอดแล้ว",
+                      buttonText: "OK",
+                    ),
+                  );
+                  Navigator.pop(context);
+                } else {
+                  Navigator.pop(context);
+                }
               } catch (e) {
                 print(e);
               }

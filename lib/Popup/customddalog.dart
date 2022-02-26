@@ -89,7 +89,7 @@ class CustomDialog extends StatelessWidget {
           left: 90,
           // right: Consts.padding,
           child: CircleAvatar(
-            backgroundColor: Colors.green,
+            backgroundColor: Colors.orange,
             backgroundImage:
                AssetImage('assets/logo_pn_bangkok.png'),
             minRadius: 50,

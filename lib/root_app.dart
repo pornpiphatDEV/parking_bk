@@ -84,7 +84,7 @@ class _RootAppState extends State<RootApp> {
             Icons.add,
             size: 25,
           ),
-          backgroundColor: Colors.green,
+          backgroundColor: Colors.orange,
           //params
         ),
         floatingActionButtonLocation:
@@ -107,8 +107,8 @@ class _RootAppState extends State<RootApp> {
     ];
 
     return AnimatedBottomNavigationBar(
-      activeColor: Color.fromARGB(255, 92, 226, 146),
-      splashColor: Color.fromARGB(255, 92, 226, 146),
+      activeColor: Colors.orange,
+      splashColor: Colors.orange,
       inactiveColor: Colors.black.withOpacity(0.5),
       icons: iconItems,
       activeIndex: pageIndex,

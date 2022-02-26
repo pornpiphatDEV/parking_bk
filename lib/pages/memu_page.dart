@@ -14,6 +14,9 @@ import './listmenupage/generate.dart';
 import 'package:get_storage/get_storage.dart';
 import '../Popup/customddalog.dart';
 
+import 'package:barcode_scan2/barcode_scan2.dart';
+import 'listmenupage/servicecharge.dart';
+
 class Memupage extends StatefulWidget {
   const Memupage({Key? key}) : super(key: key);
 
@@ -52,184 +55,156 @@ class _MemupageState extends State<Memupage> {
                         ],
                       ),
                       SizedBox(
-                        height: 25,
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 25,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Card(
-                        clipBehavior: Clip.antiAlias,
-                        child: InkWell(
-                          onTap: () async {
-                            // var email = context.read<Userprovider>().email;
-                            var userid = storage.read("uid").toString();
-
-                            var url2 = Uri.parse(
-                                '${addressAPI.news_urlAPI1}/bookingtime/bookingqrcode');
-                            var response2 = await http.post(url2, body: {
-                              "userid": userid,
-                            });
-                            print('Response status: ${response2.statusCode}');
-                            print('response2 body: ${response2.body}');
-
-                            var res = jsonDecode(response2.body..toString());
-                            print(res);
-
-                            switch (response2.statusCode) {
-                              case 200:
-                                {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              GeneratePage(valuesFrom: res)));
-                                }
-                                break;
-                              case 403:
-                                {
-                                  await showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) =>
-                                        CustomDialog(
-                                      title: "หมดเวลาการจองแล้ว",
-                                      description:
-                                          "กรุณาจองสิทธ์การใช้งานใหม่อีกครั้ง",
-                                      buttonText: "OK",
-                                    ),
-                                  );
-                                }
-                                break;
-
-                              case 401:
-                                {
-                                  await showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) =>
-                                        CustomDialog(
-                                      title: "ไม่มีการจอง",
-                                      description: "กรุณาจองสิทธ์การใช้งานก่อน",
-                                      buttonText: "OK",
-                                    ),
-                                  );
-                                }
-                                break;
-
-                              default:
-                            }
-
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) =>
-                            //             GeneratePage(valuesFrom: res)));
-
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) =>
-                            //             GeneratePage(valuesFrom: res)));
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => GeneratePage()));
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                    16.0, 12.0, 16.0, 8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    SizedBox(height: 5),
-                                    Image.asset('assets/images/qr-code1.png',
-                                        width: 100, height: 120),
-                                    const SizedBox(height: 15.0),
-                                    Text(
-                                      '    สแกนเข้าลานจอดรถ ',
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Card(
-                        clipBehavior: Clip.antiAlias,
-                        child: InkWell(
-                          onTap: () {
-                            print("Card Clicked");
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                    16.0, 12.0, 16.0, 8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    SizedBox(height: 5),
-                                    Image.asset(
-                                        'assets/images/qrcode-parking.png',
-                                        width: 100,
-                                        height: 120),
-                                    const SizedBox(height: 15.0),
-                                    Text(
-                                      '    สแกนออกลานจอดรถ ',
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                        height: 50,
                       ),
                     ],
                   ),
                   SizedBox(
                     height: 15,
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Card(
-                        clipBehavior: Clip.antiAlias,
-                        child: InkWell(
-                          onTap: () {
-                            print("Card Clicked");
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Padding(
-                                padding: const EdgeInsets.fromLTRB(
-                                    16.0, 12.0, 16.0, 8.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    SizedBox(height: 5),
-                                    Image.asset('assets/images/signage.png',
-                                        width: 150, height: 120),
-                                    const SizedBox(height: 15.0),
-                                    Text(
-                                      '         ที่ตั้งลานจอดรถ ',
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                  Card(
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage:
+                            AssetImage('assets/images/qr-code1.png'),
                       ),
-                    ],
+                      title: Text('สแกนเข้าลานจอดรถ'),
+                      onTap: () async {
+                        // var email = context.read<Userprovider>().email;
+                        var userid = storage.read("uid").toString();
+
+                        var url2 = Uri.parse(
+                            '${addressAPI.news_urlAPI2}/bookingqrcodegenerate');
+                        var response2 = await http.post(url2, body: {
+                          "userid": userid,
+                        });
+                        print('Response status: ${response2.statusCode}');
+                        print('response2 body: ${response2.body}');
+
+                        var res = jsonDecode(response2.body..toString());
+                        print(res);
+
+                        switch (response2.statusCode) {
+                          case 200:
+                            {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          GeneratePage(valuesFrom: res)));
+                            }
+                            break;
+                          case 403:
+                            {
+                              await showDialog(
+                                context: context,
+                                builder: (BuildContext context) => CustomDialog(
+                                  title: "หมดเวลาการจองแล้ว",
+                                  description:
+                                      "กรุณาจองสิทธ์การใช้งานใหม่อีกครั้ง",
+                                  buttonText: "OK",
+                                ),
+                              );
+                            }
+                            break;
+
+                          case 401:
+                            {
+                              var message = jsonDecode(response2.body);
+
+                              if (message['message'] == 'you have parked') {
+                                await showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      CustomDialog(
+                                    title: "ท่านได้ทำการเข้าจอด",
+                                    description: "กรุณาชำระค่าบริการ",
+                                    buttonText: "OK",
+                                  ),
+                                );
+                              } else {
+                                await showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      CustomDialog(
+                                    title: "ไม่มีการจอง",
+                                    description: "กรุณาจองสิทธ์การใช้งานก่อน",
+                                    buttonText: "OK",
+                                  ),
+                                );
+                              }
+                            }
+                            break;
+
+                          default:
+                        }
+                      },
+                    ),
+                  ),
+                  Card(
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage:
+                            AssetImage('assets/images/qrcode-parking.png'),
+                      ),
+                      title: Text('สแกนออกลานจอดรถ'),
+
+                      onTap: () async {
+                        // print("Card Clicked");
+                        var result = await BarcodeScanner.scan();
+
+                        String qrCodeResultscan = '${result.rawContent}';
+                        print(qrCodeResultscan);
+                        if (qrCodeResultscan == '6202021511054&6202021521149') {
+                          var userid = storage.read("uid").toString();
+
+                          var url2 =
+                              Uri.parse('${addressAPI.news_urlAPI2}/chekbill');
+                          var response2 = await http.post(url2, body: {
+                            "userid": userid,
+                          });
+                          print('Response status: ${response2.statusCode}');
+                          print('response2 body: ${response2.body}');
+
+                          var res = jsonDecode(response2.body..toString());
+                          print(res);
+
+                          if (response2.statusCode == 200) {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        Servicecharge(valuesFrom: res)));
+                          } else {
+                            await showDialog(
+                              context: context,
+                              builder: (BuildContext context) => CustomDialog(
+                                title: "ผิดพลาด",
+                                description: "ท่านยังไม่ทำการเข้าจอด",
+                                buttonText: "OK",
+                              ),
+                            );
+                          }
+                        } else if (qrCodeResultscan == "") {
+                          print("asfsaf");
+                        } else {
+                          await showDialog(
+                            context: context,
+                            builder: (BuildContext context) => CustomDialog(
+                              title: "ผิดพลาด",
+                              description: "กรุณาจลองใหม่อีกครั้ง",
+                              buttonText: "OK",
+                            ),
+                          );
+                        }
+
+                        // print(qrCodeResultscan);
+
+                        // 6202021511054&6202021521149 // If a unknown format was scanned this field contains a note
+                      },
+                      // subtitle: Text(movie.genre),
+                      // trailing: Text(movie.year),
+                    ),
                   ),
                 ],
               ),

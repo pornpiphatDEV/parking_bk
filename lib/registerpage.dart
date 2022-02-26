@@ -94,7 +94,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               decoration: InputDecoration(
                                 prefixIcon: Icon(
                                   Icons.view_carousel_outlined,
-                                  color: Colors.green,
+                                  color: Colors.orange,
                                 ),
                               ),
 
@@ -135,7 +135,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                             .secondary)),
                                 prefixIcon: Icon(
                                   Icons.perm_contact_cal,
-                                  color: Colors.green,
+                                  color: Colors.orange,
                                 ),
                               ),
                               onSaved: (String? firstname) {
@@ -172,7 +172,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                             .secondary)),
                                 prefixIcon: Icon(
                                   Icons.person_pin_sharp,
-                                  color: Colors.green,
+                                  color: Colors.orange,
                                 ),
                               ),
                               validator: (value) {
@@ -206,7 +206,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                             .secondary)),
                                 prefixIcon: Icon(
                                   Icons.email,
-                                  color: Colors.green,
+                                  color: Colors.orange,
                                 ),
                               ),
                               validator: MultiValidator([
@@ -243,7 +243,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                             .secondary)),
                                 prefixIcon: Icon(
                                   Icons.lock,
-                                  color: Colors.green,
+                                  color: Colors.orange,
                                 ),
                                 suffixIcon: IconButton(
                                   onPressed: () {
@@ -251,7 +251,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                       hidePassword = !hidePassword;
                                     });
                                   },
-                                  color: Colors.green,
+                                  color: Colors.orange,
                                   icon: Icon(hidePassword
                                       ? Icons.visibility_off
                                       : Icons.visibility),
@@ -294,7 +294,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                               .secondary)),
                                   prefixIcon: Icon(
                                     Icons.vpn_key,
-                                    color: Colors.green,
+                                    color: Colors.orange,
                                   ),
                                   suffixIcon: IconButton(
                                     onPressed: () {
@@ -303,7 +303,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                             !hideConfirmPassword;
                                       });
                                     },
-                                    color: Colors.green,
+                                    color: Colors.orange,
                                     icon: Icon(hideConfirmPassword
                                         ? Icons.visibility_off
                                         : Icons.visibility),

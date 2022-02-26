@@ -42,7 +42,7 @@ class _CreditcardState extends State<Creditcard> {
       debugShowCheckedModeBanner: false,
 
       home: Scaffold(
-        resizeToAvoidBottomInset: true,
+        resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
         appBar: AppBar(
           elevation: 0,
