@@ -17,14 +17,14 @@ import '../Popup/customddalog.dart';
 import 'package:barcode_scan2/barcode_scan2.dart';
 import 'listmenupage/servicecharge.dart';
 
-class Memupage extends StatefulWidget {
-  const Memupage({Key? key}) : super(key: key);
+class Memu_page extends StatefulWidget {
+  const Memu_page({Key? key}) : super(key: key);
 
   @override
-  _MemupageState createState() => _MemupageState();
+  _Memu_pageState createState() => _Memu_pageState();
 }
 
-class _MemupageState extends State<Memupage> {
+class _Memu_pageState extends State<Memu_page> {
   final storage = GetStorage();
   @override
   Widget build(BuildContext context) {
@@ -151,6 +151,11 @@ class _MemupageState extends State<Memupage> {
 
                       onTap: () async {
                         // print("Card Clicked");
+
+                        // ******************************************************************
+                        //  ใช้งาน
+                        // ******************************************************************
+
                         var result = await BarcodeScanner.scan();
 
                         String qrCodeResultscan = '${result.rawContent}';
@@ -198,9 +203,36 @@ class _MemupageState extends State<Memupage> {
                           );
                         }
 
-                        // print(qrCodeResultscan);
+                        // ******************************************************************
 
-                        // 6202021511054&6202021521149 // If a unknown format was scanned this field contains a note
+                        // var userid = storage.read("uid").toString();
+                        // var url2 =
+                        //     Uri.parse('${addressAPI.news_urlAPI2}/chekbill');
+                        // var response2 = await http.post(url2, body: {
+                        //   "userid": userid,
+                        // });
+                        // print('Response status: ${response2.statusCode}');
+                        // print('response2 body: ${response2.body}');
+
+                        // var res = jsonDecode(response2.body..toString());
+                        // print(res);
+
+                        // if (response2.statusCode == 200) {
+                        //   Navigator.push(
+                        //       context,
+                        //       MaterialPageRoute(
+                        //           builder: (context) =>
+                        //               Servicecharge(valuesFrom: res)));
+                        // } else {
+                        //   await showDialog(
+                        //     context: context,
+                        //     builder: (BuildContext context) => CustomDialog(
+                        //       title: "ผิดพลาด",
+                        //       description: "ท่านยังไม่ทำการเข้าจอด",
+                        //       buttonText: "OK",
+                        //     ),
+                        //   );
+                        // }
                       },
                       // subtitle: Text(movie.genre),
                       // trailing: Text(movie.year),

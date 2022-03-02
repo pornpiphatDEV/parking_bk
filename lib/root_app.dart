@@ -16,6 +16,8 @@ import 'package:get_storage/get_storage.dart';
 import 'pages/profile_page.dart';
 import 'pages/booking_page.dart';
 import 'pages/memu_page.dart';
+import 'pages/usagehistory_page.dart';
+import 'pages/parkinghistory_page.dart';
 
 class RootApp extends StatefulWidget {
   @override
@@ -28,9 +30,9 @@ class _RootAppState extends State<RootApp> {
   bool loop = true;
 
   List<Widget> pages = [
-    Text("data"),
-    Text("data"),
-    Memupage(),
+    Parkinghistory_page(),
+    Usagehistory_page(),
+    Memu_page(),
     ProfilePage(),
     BookingPage(),
   ];
@@ -58,11 +60,47 @@ class _RootAppState extends State<RootApp> {
     }
   }
 
+  void getUsagehistory(BuildContext context) async {
+    final response = await http.get(
+      Uri.parse('${addressAPI.news_urlAPI1}/users/usagehistory'),
+      headers: {'userid': storage.read("uid").toString()},
+    );
+    final resstatusCode = response.statusCode;
+    final responseJson = jsonDecode(response.body..toString());
+
+    print(responseJson);
+
+    if (resstatusCode == 200) {
+      Provider.of<Userprovider>(context, listen: false)
+          .getusagehistory(responseJson);
+    }
+  }
+
+  void getParkinghistory(BuildContext context) async {
+    final response = await http.get(
+      Uri.parse('${addressAPI.news_urlAPI1}/users/parkinghistory'),
+      headers: {'userid': storage.read("uid").toString()},
+    );
+    final resstatusCode = response.statusCode;
+    final responseJson = jsonDecode(response.body..toString());
+
+    print(responseJson);
+
+    if (resstatusCode == 200) {
+        Provider.of<Userprovider>(context, listen: false)
+        .getparkinghistory(responseJson);
+    }
+
+  }
+
   @override
   void initState() {
     // TODO: implement initState
-    this.getUser(context);
+
     super.initState();
+    this.getUser(context);
+    this.getUsagehistory(context);
+    this.getParkinghistory(context);
   }
 
   @override
@@ -118,6 +156,12 @@ class _RootAppState extends State<RootApp> {
       iconSize: 25,
       rightCornerRadius: 10,
       onTap: (index) {
+        if (index == 0) {
+      
+          this.getParkinghistory(context);
+        } else if (index == 1) {
+          this.getUsagehistory(context);
+        } 
         selectedTab(index);
       },
       //other params

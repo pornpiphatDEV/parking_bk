@@ -95,6 +95,7 @@ class _ServicechargeState extends State<Servicecharge> {
                   var result = {
                     "qrcodeid": '$qrcodeid',
                     "servicecharge": '$servicecharge',
+                    "hourincar":"$hrs ชั่วโมง $mins นาที",
                     "userid": '${widget.valuesFrom['userid']}',
                   };
 

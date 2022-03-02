@@ -3,17 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_field_validator/form_field_validator.dart';
-import 'creditcard.dart';
+import '/creditcard.dart';
 import 'package:get_storage/get_storage.dart';
-import 'model/car.dart';
+import '/model/car.dart';
 
-class Carregiisterpage extends StatefulWidget {
-  const Carregiisterpage({Key? key}) : super(key: key);
+import '/Popup/customddalog.dart';
+import 'package:http/http.dart' as http;
+import '/constants/addressAPI.dart';
+
+
+
+class Recarregister_page extends StatefulWidget {
+  const Recarregister_page({Key? key}) : super(key: key);
   @override
-  _CarregiisterpageState createState() => _CarregiisterpageState();
+  _Recarregister_pageState createState() => _Recarregister_pageState();
 }
 
-class _CarregiisterpageState extends State<Carregiisterpage> {
+class _Recarregister_pageState extends State<Recarregister_page> {
   final _formKey = GlobalKey<FormState>();
 
   var brandcar = [
@@ -32,6 +38,7 @@ class _CarregiisterpageState extends State<Carregiisterpage> {
     "HYUNDAI",
     "อื่นๆ",
   ];
+  final storage = GetStorage();
 
   Cars mycar = Cars(brandcar: '', carpaint: '', carregistration: '');
   @override
@@ -52,6 +59,16 @@ class _CarregiisterpageState extends State<Carregiisterpage> {
             elevation: 0,
             brightness: Brightness.light,
             backgroundColor: Colors.white,
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                Icons.arrow_back_ios,
+                size: 20,
+                color: Colors.black,
+              ),
+            ),
           ),
           body: Container(
             height: MediaQuery.of(context).size.height,
@@ -185,20 +202,48 @@ class _CarregiisterpageState extends State<Carregiisterpage> {
                             if (_formKey.currentState!.validate()) {
                               _formKey.currentState!.save();
 
-                              print(mycar.brandcar);
-                              print(mycar.carregistration);
-                              print(mycar.carpaint);
-
+                              var userid = storage.read("uid").toString();
                               var _mycar = {
+                                "userid": userid,
                                 "brandcar": mycar.brandcar,
                                 "carregistration": mycar.carregistration,
                                 "carpaint": mycar.carpaint,
                               };
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => Creditcard(
-                                          valueFromcarregisterpage: _mycar)));
+                              var url = Uri.parse(
+                                  '${addressAPI.news_urlAPI1}/users/reusercar');
+                              try {
+                                var response =
+                                    await http.post(url, body: _mycar);
+                                print(
+                                    'Response status: ${response.statusCode}');
+                                print('Response body: ${response.body}');
+
+                                if (response.statusCode == 200) {
+                                  await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        CustomDialog(
+                                      title: "เสร็จสิน",
+                                      description: "เปลี่ยนรถของผู้ใช้แล้ว",
+                                      buttonText: "clear",
+                                    ),
+                                  );
+                              
+                                  Navigator.pop(context);
+                                } else if (response.statusCode == 401) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        CustomDialog(
+                                      title: "ผิดพลาด",
+                                      description: "โปรดลงใหม่อีกครั้ง",
+                                      buttonText: "clear",
+                                    ),
+                                  );
+                                }
+                              } catch (e) {
+                                print(e);
+                              }
                             }
                           },
                           // #1FB684
@@ -206,7 +251,7 @@ class _CarregiisterpageState extends State<Carregiisterpage> {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30)),
                           child: Text(
-                            "ถัดไป",
+                            "ตั้งค่าข้อมูลรถ",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontWeight: FontWeight.w600,

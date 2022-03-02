@@ -41,7 +41,7 @@ class VideoState extends State<Splash> with SingleTickerProviderStateMixin {
     // storage.read("uid").toString();
 
     final bool isConnected = await InternetConnectionChecker().hasConnection;
-
+    print(storage.read("uid"));
     if (isConnected) {
       if (storage.read("uid") != null) {
         // Navigator.pushReplacement(

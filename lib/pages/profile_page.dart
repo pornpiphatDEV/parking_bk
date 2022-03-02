@@ -1,4 +1,5 @@
 // import 'package:budget_tracker_ui/theme/colors.dart';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -9,6 +10,12 @@ import '../providers/userprovider.dart';
 import '../loginpage.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:restart_app/restart_app.dart';
+import './setups/setupuserinformation_page.dart';
+import './setups/repassword_page.dart';
+import './setups/recarregister_page.dart';
+import './setups/userinformation_page.dart';
+import 'package:http/http.dart' as http;
+import 'package:parking_bk/constants/addressAPI.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -32,7 +39,6 @@ class _ProfilePageState extends State<ProfilePage> {
     var lname = Provider.of<Userprovider>(context).lname;
     var email = Provider.of<Userprovider>(context).email;
     var amountmoney = Provider.of<Userprovider>(context).amountmoney;
-
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -186,46 +192,89 @@ class _ProfilePageState extends State<ProfilePage> {
           SizedBox(
             height: 20,
           ),
-          // Column(
-          //   crossAxisAlignment: CrossAxisAlignment.start,
-          //   children: [
-          //     Center(
-          //       child: Container(
-          //           width: MediaQuery.of(context).size.width * 0.96,
-          //           height: MediaQuery.of(context).size.width * 0.15,
-          //           margin: EdgeInsets.all(20),
-          //           child: FlatButton(
-          //               color: Color.fromARGB(255, 185, 189, 187),
-          //               onPressed: () => {print("ตั้งค่า")},
-          //               child: Row(children: <Widget>[
-          //                 Icon(Icons.settings),
-          //                 Text("ตั้งค่า")
-          //               ]))),
-          //     ),
-          //   ],
-          // ),
-
           Card(
             child: ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('ตั้งค่า'),
+              leading: Icon(Icons.account_circle_rounded),
+              title: Text('ข้อมูลผู้ใช้งาน'),
               onTap: () async {
-                // print("Card Clicked");
+                final response = await http.get(
+                  Uri.parse('${addressAPI.news_urlAPI1}/users/userinformation'),
+                  headers: {'userid': storage.read("uid").toString()},
+                );
+                final resstatusCode = response.statusCode;
+                final responseJson = jsonDecode(response.body..toString());
+
+                print(resstatusCode);
+
+                if (resstatusCode == 200) {
+                  print(responseJson);
+
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => Userinformation_page(value:responseJson)));
+                }
               },
             ),
           ),
+          Card(
+            child: ExpansionTile(
+              leading: Icon(Icons.settings),
+              title: Text('ตั้งค่าผู้ใช้งาน'),
+              children: <Widget>[
+                ListTile(
+                  leading: Text(''),
+                  title: Text('ข้อมูลส่วนตัวและข้อมูลบัญชี'),
+                  onTap: () async {
+                    // print("Card Clicked");
 
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Setupuserinformation_page()));
+                  },
+                ),
+                ListTile(
+                  leading: Text(''),
+                  title: Text('ข้อมูลรถผู้ใช้งาน'),
+                  onTap: () async {
+                    // print("Card Clicked");
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Recarregister_page()));
+                  },
+                ),
+                ListTile(
+                  leading: Text(''),
+                  title: Text('เปลี่ยนรหัสผ่าน'),
+                  onTap: () async {
+                    // print("Card Clicked");
+
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Repassword_page()));
+                  },
+                ),
+              ],
+            ),
+          ),
           Card(
             child: ListTile(
               leading: Icon(Icons.logout),
               title: Text('ออกจากระบบ'),
               onTap: () async {
-                // print("Card Clicked");
                 print("ออกจากระบบ");
-                await storage.remove('uid');
-                print(storage.read('uid'));
 
-                if (storage.read('uid') == null) {
+                await storage.remove('uid');
+                var uid = await storage.read('uid');
+
+                storage.listen(() {
+                  print('box changed');
+                });
+
+                if (uid == null) {
                   Restart.restartApp();
                 }
               },
